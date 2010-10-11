@@ -1,6 +1,47 @@
 module KeywordSearchHelper
+  QUOTE_REGEX = /(\A|\s*)"(.*?)"(\s*|\z)/
+  ACTION_REGEX = /^([\w\d\-]+)\:(.*)/
+  INDEX_REGEX = /^\$(\d+)$/
+  
   def extract(input_string)
-    output = {}
+    output = {:keywords => []}
+    
+    # Extract double-quoted phrases - first protecting any part of the string 
+    # that may look like an index marker.
+    quoted = []
+    string = input_string.to_s.gsub('$','$$').gsub(QUOTE_REGEX) { quoted << $2; " $#{quoted.size - 1} " }
+    # break everything left into single words
+    tokens = string.split(' ')
+    tokens.each_with_index do |token, idx|
+      # check for an action
+      if token =~ ACTION_REGEX
+        action = $1.to_sym
+        keyword = $2
+        output[action] ||= []
+        
+        if keyword.blank?
+          # If the keyword is blank then it should be a quoted phrase.
+          # Get the index value from the next value in the tokens array and
+          # insert the value from the 'quoted' array
+          if tokens[idx + 1] && (match = tokens[idx + 1].match(INDEX_REGEX))
+            i = match[1].to_i
+            output[action] << quoted[i]
+            quoted[i] = ''
+          end
+        else
+          output[action] << keyword
+        end
+      elsif token =~ INDEX_REGEX
+        # If an indexing token then pull value from 'quoted' array
+        output[:keywords] << quoted[$1.to_i]
+      else
+        output[:keywords] << token
+      end
+    end
+    
+    # compact and remove empty arrays
+    output.each { |key, array| output.delete(key) if array.reject(&:blank?).blank? }
+    
     output
   end
   

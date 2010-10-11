@@ -13,15 +13,21 @@ class KeywordSearchHelperTest < ActiveSupport::TestCase
   end
   
   test "will split single words into array" do
-    assert_equal %w(one two), @m.call('one two')[:keywords]
+    str = "one two"
+    expected = {:keywords => %w(one two)}
+    assert_equal expected, @m.call(str)
   end
   
   test "should extract double-quoted phrases into keywords array" do
-    assert_equal ['single phrase','blah'], @m.call('"single phrase" blah')[:keywords]
+    str = '"single phrase" blah'
+    expected = {:keywords => ['single phrase','blah']}
+    assert_equal expected, @m.call(str)
   end
   
   test "when double-quoted only is extracted" do
-    assert_equal ['single phrase'], @m.call('"single phrase"')[:keywords]
+    str = '"single phrase"'
+    expected = {:keywords => ['single phrase']}
+    assert_equal expected, @m.call(str)
   end
   
   test "using an 'action'" do
