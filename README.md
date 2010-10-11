@@ -8,7 +8,7 @@ Usage
 -----
 
 From inside your rails app directory...  
-`./script/install plugin git@github.com:ebonical/keyword-search-helper.git`
+`./script/plugin install git@github.com:ebonical/keyword-search-helper.git`
 
 
 Examples
