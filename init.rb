@@ -1,1 +1,1 @@
-# Include hook code here
+require "keyword_search_helper"
