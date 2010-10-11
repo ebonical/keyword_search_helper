@@ -53,4 +53,10 @@ class KeywordSearchHelperTest < ActiveSupport::TestCase
     expected = {:tag => ['spaced tag']}
     assert_equal expected, @m.call(str)
   end
+  
+  test "escaped $ dollar characters restored" do
+    str = "$0"
+    expected = {:keywords => ['$0']}
+    assert_equal expected, @m.call(str)
+  end
 end
