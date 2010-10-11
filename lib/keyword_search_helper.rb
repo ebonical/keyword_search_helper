@@ -40,7 +40,7 @@ module KeywordSearchHelper
     end
     
     # compact and remove empty arrays
-    output.each { |key, array| output.delete(key) if array.reject(&:blank?).blank? }
+    output.each { |key, array| array.reject!(&:blank?); output.delete(key) if array.blank? }
     # restore $ characters to as inputted
     output.each { |key, array| array.map! { |value| value.gsub('$$','$') } }
     
