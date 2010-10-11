@@ -4,9 +4,15 @@ Keyword Search Helper
 Extracts keywords and special query actions from a search string. 
 This does not presume to know how you will use your keywords once they've been extracted.
 
+Usage
+-----
 
-Example
-=======
+From inside your rails app directory...  
+`./script/install plugin git@github.com:ebonical/keyword-search-helper.git`
+
+
+Examples
+--------
 
     # Simple query
     input = "little furry fox"
@@ -23,4 +29,4 @@ Example
     # For actions with spaces just wrap in double quotes
     input = 'tag:"spaced tag"'
 
-Copyright (c) 2010 Ebony Charlton, released under the MIT license
+_Copyright (c) 2010 Ebony Charlton, released under the MIT license_
