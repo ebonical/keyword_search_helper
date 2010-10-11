@@ -3,7 +3,15 @@ module KeywordSearchHelper
   ACTION_REGEX = /^([\w\d\-]+)\:(.*)/
   INDEX_REGEX = /^\$(\d+)$/
   
-  def extract(input_string)
+  def extract(input_string, options = {})
+    [:only, :exclude].each do |key|
+      instance_variable_set("@#{key}_actions", [options[key]].flatten.compact.map(&:to_sym))
+    end
+    
+    if !(@only_actions.blank? || @exclude_actions.blank?)
+      raise ArgumentError, ":only and :exclude options cannot both be set"
+    end
+    
     output = {:keywords => []}
     
     # Extract double-quoted phrases - first protecting any part of the string 
@@ -14,9 +22,16 @@ module KeywordSearchHelper
     tokens = string.split(' ')
     tokens.each_with_index do |token, idx|
       # check for an action
+      is_action = false
+      
       if token =~ ACTION_REGEX
         action = $1.to_sym
         keyword = $2
+        is_action = @only_actions.blank? && !@exclude_actions.include?(action) || 
+                    @only_actions.include?(action)
+      end
+      
+      if is_action
         output[action] ||= []
         
         if keyword.blank?
